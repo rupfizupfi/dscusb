@@ -1,9 +1,10 @@
 plugins {
     kotlin("jvm") version "1.9.23"
+    `java`
 }
 
-group = "com.glowingblue.intellij"
-version = "1.0-SNAPSHOT"
+group = "ch.rupfizupfi.dscusb"
+version = "0.0.1-beta.0"
 
 repositories {
     mavenCentral()
@@ -16,6 +17,7 @@ dependencies {
 tasks.test {
     useJUnitPlatform()
 }
+
 kotlin {
     jvmToolchain(21)
 }

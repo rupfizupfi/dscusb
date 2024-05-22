@@ -1,7 +1,6 @@
 package com.glowingblue.intellij
 
 import jnr.ffi.LibraryLoader
-import jnr.ffi.Platform
 
 class DSCUSB {
     private val library: DSCUSBDrv64
@@ -20,24 +19,36 @@ class DSCUSB {
     }
 
     fun readCommand(serial: Int, command: String): Float {
-        var result = 0f
-        library.READCOMMAND(serial, command, result)
-        return result
+        var value = 0f
+        val result = library.READCOMMAND(serial, command, value)
+        if (result != 0) {
+            throw CommandExecutionException(result)
+        }
+        return value
     }
 
-    fun writeCommand(serial: Int, command: String, value: Float): Int {
-        return library.WRITECOMMAND(serial, command, value)
+    fun writeCommand(serial: Int, command: String, value: Float) {
+        val result = library.WRITECOMMAND(serial, command, value)
+        if (result != 0) {
+            throw CommandExecutionException(result)
+        }
     }
 
-    fun executeCommand(serial: Int, command: String): Int {
-        return library.EXECUTECOMMAND(serial, command)
+    fun executeCommand(serial: Int, command: String) {
+        val result = library.EXECUTECOMMAND(serial, command)
+        if (result != 0) {
+            throw CommandExecutionException(result)
+        }
     }
 
     fun setTimeout(newTimeout: Int): Int {
         return library.SETTIMEOUT(newTimeout)
     }
 
-    fun getTimeout(): Int {
+    /**
+     * Get the timeout in milliseconds.
+     */
+    fun getTimeout(): Long {
         return library.GETTIMEOUT()
     }
 
