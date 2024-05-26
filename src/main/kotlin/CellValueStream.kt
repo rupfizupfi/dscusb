@@ -23,9 +23,8 @@ class CellValueStream {
         running.set(true)
         thread(start = true) {
             while (running.get()) {
-                val loadCellValue = readLoadCellValue()
-                loadCellValues.add(loadCellValue)
-                Thread.sleep(connection.getTimeout())
+                loadCellValues.add(readLoadCellValue())
+                Thread.sleep(10)
             }
         }
         inProgress.set(false)

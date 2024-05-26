@@ -19,12 +19,12 @@ class DSCUSB {
     }
 
     fun readCommand(serial: Int, command: String): Float {
-        var value = 0f
+        var value = FloatArray(1)
         val result = library.READCOMMAND(serial, command, value)
         if (result != 0) {
             throw CommandExecutionException(result)
         }
-        return value
+        return value[0]
     }
 
     fun writeCommand(serial: Int, command: String, value: Float) {
