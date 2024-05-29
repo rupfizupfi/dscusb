@@ -5,7 +5,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.concurrent.thread
 
 class CellValueStream {
-    private val loadCellValues = ConcurrentLinkedQueue<Float>()
+    private val loadCellValues = ConcurrentLinkedQueue<Pair<Float, Long>>()
     private val connection = Connection()
     private var running = AtomicBoolean(false)
     private var inProgress = AtomicBoolean(false)
@@ -15,7 +15,7 @@ class CellValueStream {
             throw IllegalStateException("Cannot start reading while another operation is in progress.")
         }
 
-        if(running.get()) {
+        if (running.get()) {
             throw IllegalStateException("Cannot start reading while already running.")
         }
 
@@ -24,7 +24,6 @@ class CellValueStream {
         thread(start = true) {
             while (running.get()) {
                 loadCellValues.add(readLoadCellValue())
-                Thread.sleep(10)
             }
         }
         inProgress.set(false)
@@ -39,15 +38,15 @@ class CellValueStream {
         inProgress.set(false)
     }
 
-    fun getNextValues(): List<Float> {
-        val values = mutableListOf<Float>()
+    fun getNextValues(): List<Measurement> {
+        val values = mutableListOf<Measurement>()
         while (loadCellValues.isNotEmpty()) {
-            values.add(loadCellValues.poll())
+            values.add(Measurement.fromPair(loadCellValues.poll()))
         }
         return values
     }
 
-    private fun readLoadCellValue(): Float {
-        return connection.readLoadCellValue()
+    private fun readLoadCellValue(): Pair<Float,Long> {
+        return Pair(connection.readLoadCellValue(), System.currentTimeMillis())
     }
 }
