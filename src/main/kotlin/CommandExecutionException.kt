@@ -1,4 +1,4 @@
-package com.glowingblue.intellij
+package ch.rupfizupfi.dscusb
 
 class CommandExecutionException(errorCode: Int) : Exception() {
     override val message: String = when (errorCode) {

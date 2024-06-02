@@ -1,4 +1,4 @@
-package com.glowingblue.intellij
+package ch.rupfizupfi.dscusb
 
 class Connection {
     private val dscusb: DSCUSB = DSCUSB()

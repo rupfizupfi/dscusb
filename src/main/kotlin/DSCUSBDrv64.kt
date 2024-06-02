@@ -1,4 +1,4 @@
-package com.glowingblue.intellij
+package ch.rupfizupfi.dscusb
 
 import jnr.ffi.annotations.In
 import jnr.ffi.annotations.Out

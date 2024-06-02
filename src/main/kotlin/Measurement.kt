@@ -1,4 +1,4 @@
-package com.glowingblue.intellij
+package ch.rupfizupfi.dscusb
 
 class Measurement(private var force: Float, private var timestamp: Long) {
     companion object {
