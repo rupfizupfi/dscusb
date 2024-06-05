@@ -19,13 +19,17 @@ class CellValueStream {
             throw IllegalStateException("Cannot start reading while already running.")
         }
 
-        connection.open()
         running.set(true)
+
         thread(start = true) {
+            connection.open()
             while (running.get()) {
                 loadCellValues.add(readLoadCellValue())
             }
+            connection.close()
+            inProgress.set(false)
         }
+
         inProgress.set(false)
     }
 
@@ -34,8 +38,6 @@ class CellValueStream {
             throw IllegalStateException("Cannot stop reading while another operation is in progress.")
         }
         running.set(false)
-        connection.close()
-        inProgress.set(false)
     }
 
     fun getNextValues(): List<Measurement> {

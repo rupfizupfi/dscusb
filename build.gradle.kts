@@ -1,10 +1,11 @@
 plugins {
     kotlin("jvm") version "1.9.23"
     `java`
+    id("com.github.johnrengelman.shadow") version "7.1.0"
 }
 
 group = "ch.rupfizupfi.dscusb"
-version = "0.0.1-beta.0"
+version = "0.0.1-beta.1"
 
 repositories {
     mavenCentral()
@@ -16,6 +17,12 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+}
+
+tasks {
+    shadowJar {
+        archiveFileName.set("dscusb.jar")
+    }
 }
 
 kotlin {
