@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "ch.rupfizupfi.dscusb"
-version = "0.0.1-beta.1"
+version = project.properties["version"].toString()
 
 repositories {
     mavenCentral()
