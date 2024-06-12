@@ -39,6 +39,16 @@ class Connection {
         return dscusb.readCommand(serialNumber, "SYS")
     }
 
+    fun readReadRateValue(): Byte {
+        val result =  dscusb.readCommand(serialNumber, "RATE")
+        return result.toInt().toByte()
+    }
+
+    fun readBaudRateValue(): Byte {
+        val result = dscusb.readCommand(serialNumber, "BAUD")
+        return result.toInt().toByte()
+    }
+
     fun getTimeout(): Long {
         return dscusb.getTimeout()
     }
