@@ -12,7 +12,9 @@ repositories {
 }
 
 dependencies {
-    implementation("com.github.jnr:jnr-ffi:2.2.0")
+    implementation("com.github.jnr:jnr-ffi:2.2.16")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:2.0.0")
 }
 
 tasks.test {
