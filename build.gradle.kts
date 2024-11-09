@@ -12,9 +12,9 @@ repositories {
 }
 
 dependencies {
-    implementation("com.github.jnr:jnr-ffi:2.2.16")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:2.0.0")
+    implementation("com.github.jnr:jnr-ffi:2.2.17")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:2.0.21")
 }
 
 tasks.test {
@@ -28,5 +28,5 @@ tasks {
 }
 
 kotlin {
-    jvmToolchain(21)
+    jvmToolchain(23)
 }
