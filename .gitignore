@@ -4,11 +4,18 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
+### Kotlin ###
+.kotlin/
+
+### Native driver DLLs - vendor-supplied, never redistributed (see doc/native-libraries.md) ###
+*.dll
+
 ### IntelliJ IDEA ###
 .idea/modules.xml
 .idea/jarRepositories.xml
 .idea/compiler.xml
 .idea/libraries/
+.idea/shelf/
 *.iws
 *.iml
 *.ipr

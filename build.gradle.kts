@@ -1,20 +1,29 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
-    kotlin("jvm") version "2.1.10"
+    kotlin("jvm") version "2.4.10"
     `java`
-    id("com.github.johnrengelman.shadow") version "8.1.1"
+    application
+    id("com.gradleup.shadow") version "9.6.1"
 }
 
 group = "ch.rupfizupfi.dscusb"
-version = project.properties["version"].toString()
+version = providers.gradleProperty("version").get()
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    implementation("com.github.jnr:jnr-ffi:2.2.17")
+    implementation("com.github.jnr:jnr-ffi:2.3.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:2.1.10")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:2.4.10")
+}
+
+// Only the bundled hardware smoke test in ch.rupfizupfi.dscusb.examples - consumers use this
+// project as a library. See doc/native-libraries.md for making the DLLs visible to `run`.
+application {
+    mainClass = "ch.rupfizupfi.dscusb.examples.DemoKt"
 }
 
 tasks.test {
@@ -28,10 +37,8 @@ tasks {
 }
 
 kotlin {
-    jvmToolchain(23)
-    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        kotlinOptions {
-            jvmTarget = "23"
-        }
+    jvmToolchain(26)
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_26
     }
 }
