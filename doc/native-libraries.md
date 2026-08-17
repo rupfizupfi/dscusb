@@ -41,7 +41,7 @@ $env:PATH = "C:\mantracourt\dll;$env:PATH"
 ```
 
 **3. Next to the launched jar** — what the vendor's own examples assume, and what
-`doc/dscusb/csharp-example/Form1.cs` warns about in its load handler. Dropping the DLL beside
+Mantracourt's C# sample warns about in its load handler. Dropping the DLL beside
 `dscusb.jar` works for a deployed fat jar.
 
 Avoid copying DLLs into `C:\Windows\System32`. It works, and the vendor sample even suggests it, but

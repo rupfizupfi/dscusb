@@ -10,6 +10,10 @@ build/
 ### Native driver DLLs - vendor-supplied, never redistributed (see doc/native-libraries.md) ###
 *.dll
 
+### Vendor material - keep locally, never commit. Only the HTML manuals are in-tree. ###
+doc/**/*.pdf
+doc/dscusb/csharp-example/
+
 ### IntelliJ IDEA ###
 .idea/modules.xml
 .idea/jarRepositories.xml

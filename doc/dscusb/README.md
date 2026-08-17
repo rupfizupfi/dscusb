@@ -6,9 +6,9 @@ device's own vocabulary — the parameter mnemonics you pass to `readCommand` / 
 
 Source of truth for everything below:
 
-- [DSCUSBDrvXX-Documentation.pdf](DSCUSBDrvXX-Documentation.pdf) — the DLL API
-- [dscusb-advanced-manual.pdf](dscusb-advanced-manual.pdf) — the device parameters
-- [csharp-example/Form1.cs](csharp-example/Form1.cs) — vendor C# sample
+- [DSCUSBDrvXX-Documentation.html](DSCUSBDrvXX-Documentation.html) — the DLL API
+- [dscusb-advanced-manual.html](dscusb-advanced-manual.html) — the device parameters
+- `csharp-example/Form1.cs` — vendor C# sample, not committed (see [../README.md](../README.md#vendor-material))
 
 ## Native types: read the typedefs, not the prose
 

@@ -188,5 +188,7 @@ Keep new native functions flowing through those layers rather than calling the b
 
 ## Third-party material
 
-The PDFs, HTML manuals and the C# example under `doc/dscusb/` are Mantracourt material, included
-unmodified for reference. They are not covered by this project's terms.
+The HTML manuals under `doc/dscusb/` are Mantracourt material, included for reference and not covered
+by this project's terms. Their PDF originals and Mantracourt's C# sample are **not** committed — they
+are gitignored, so fetch them from the vendor if you want them locally. See
+[doc/README.md](doc/README.md#vendor-material).
