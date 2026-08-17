@@ -1,0 +1,15 @@
+# Line endings are repo policy, not per-clone config. Without this file the result depends on each
+# developer's core.autocrlf, which is how CRLF got into the index for some sources but not others.
+# Everything is stored and checked out as LF, regardless of platform.
+* text=auto eol=lf
+
+# Exceptions: these are interpreted by cmd.exe, which wants CRLF.
+*.bat   text eol=crlf
+*.cmd   text eol=crlf
+
+# Never touch these - normalising a binary corrupts it.
+*.jar   binary
+*.pdf   binary
+*.dll   binary
+*.ico   binary
+*.png   binary
