@@ -13,3 +13,9 @@
 *.dll   binary
 *.ico   binary
 *.png   binary
+
+# Vendor reference material is stored byte-for-byte as supplied, so it stays comparable against the
+# original download. Last match wins, so this comes after the rules above - except doc/dscusb/README.md,
+# which is ours and follows the repo policy.
+doc/dscusb/**           -text
+doc/dscusb/README.md    text=auto eol=lf
