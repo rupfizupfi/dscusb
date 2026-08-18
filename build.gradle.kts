@@ -16,7 +16,6 @@ repositories {
 
 dependencies {
     implementation("com.github.jnr:jnr-ffi:2.3.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1")
     implementation("org.jetbrains.kotlin:kotlin-stdlib:2.4.10")
 }
 
