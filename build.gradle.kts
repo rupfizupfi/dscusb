@@ -5,6 +5,7 @@ plugins {
     `java`
     application
     id("com.gradleup.shadow") version "9.6.1"
+    `maven-publish`
 }
 
 group = "ch.rupfizupfi.dscusb"
@@ -37,6 +38,31 @@ tasks.test {
 tasks {
     shadowJar {
         archiveFileName.set("dscusb.jar")
+    }
+}
+
+// The shadow jar IS the published artifact: the deck resolves it by coordinates and drops it into
+// its runtime plugin directory. Publishing the task rather than components["shadow"] because the
+// shadow component keeps shadowJar's `all` classifier, and the deck asks for the plain coordinate.
+// The pom carries no dependencies, which is correct - jnr-ffi and kotlin-stdlib are inside the jar,
+// and device-api / spring-boot-autoconfigure are compileOnly because the deck provides them.
+publishing {
+    publications {
+        create<MavenPublication>("shadow") {
+            groupId = "ch.rupfizupfi.dscusb"
+            artifactId = "dscusb"
+            artifact(tasks.shadowJar) { classifier = "" }
+        }
+    }
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/rupfizupfi/dscusb")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
     }
 }
 
