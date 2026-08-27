@@ -23,6 +23,8 @@ dependencies {
     // them - a copy of the contract classes inside this jar would shadow the deck's own.
     compileOnly("ch.rupfizupfi.deck:device-api:1.0.0")
     compileOnly("org.springframework.boot:spring-boot-autoconfigure:4.1.0")
+    // Same reason: the deck brings slf4j-api, and only the logging API is used.
+    compileOnly("org.slf4j:slf4j-api:2.0.17")
 }
 
 // Only the bundled hardware smoke test in ch.rupfizupfi.dscusb.examples - consumers use this

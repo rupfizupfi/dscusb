@@ -6,6 +6,7 @@ import ch.rupfizupfi.dscusb.dscusb.CellValueStream
 import org.springframework.boot.autoconfigure.AutoConfiguration
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Conditional
 
 /**
  * What makes this jar a deck plugin: registered via
@@ -16,9 +17,12 @@ import org.springframework.context.annotation.Bean
  * The mode condition mirrors the deck's simulated providers exactly, so the two can never both
  * register and `simulated` can never resolve to hardware. Spring stays compileOnly and out of the
  * shadow jar; the deck supplies it at runtime.
+ *
+ * [OnWindowsCondition] keeps a platform this driver cannot work on from looking like a working one.
  */
 @AutoConfiguration
 @ConditionalOnProperty(name = ["deck.hardware.mode"], havingValue = "real", matchIfMissing = true)
+@Conditional(OnWindowsCondition::class)
 class DeckLoadCellAutoConfiguration {
 
     /** A new stream per call — a stopped [CellValueStream] can never be restarted. */

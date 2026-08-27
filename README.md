@@ -37,6 +37,18 @@ To smoke-test against real hardware:
 
 Both are implemented in [`examples/Demo.kt`](src/main/kotlin/ch/rupfizupfi/dscusb/examples/Demo.kt).
 
+## Windows only, and the plugin now enforces it
+
+`DSCUSBDrv64.dll` is a Win32 library on FTDI's Windows D2XX stack, and Mantracourt
+ships no Linux build — so `DSCUSB()` throws `UnsatisfiedLinkError` anywhere else.
+`DeckLoadCellAutoConfiguration` is therefore gated on `os.name` (`OnWindowsCondition`):
+off Windows it does not register the provider and logs why, so the deck refuses at
+startup instead of failing when a test opens the stream.
+
+A Linux path exists but is unbuilt: the vendor manual documents driving the module
+straight over its FTDI virtual COM port with the ASCII protocol (`!001:SYS?<CR>`,
+115200 8N1), which needs no vendor binary. Tracked as OQ-79 in the deck.
+
 ## Publishing
 
 The shadow jar is published to GitHub Packages as `ch.rupfizupfi.dscusb:dscusb`, which is how
