@@ -17,6 +17,11 @@ repositories {
 dependencies {
     implementation("com.github.jnr:jnr-ffi:2.3.0")
     implementation("org.jetbrains.kotlin:kotlin-stdlib:2.4.10")
+
+    // compileOnly on purpose: the deck provides both at runtime, and shadowJar must not bundle
+    // them - a copy of the contract classes inside this jar would shadow the deck's own.
+    compileOnly("ch.rupfizupfi.deck:device-api:1.0.0")
+    compileOnly("org.springframework.boot:spring-boot-autoconfigure:4.1.0")
 }
 
 // Only the bundled hardware smoke test in ch.rupfizupfi.dscusb.examples - consumers use this
