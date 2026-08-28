@@ -1,5 +1,7 @@
 package ch.rupfizupfi.dscusb.deck
 
+import ch.rupfizupfi.deck.device.api.ContractVersion
+import ch.rupfizupfi.deck.device.api.DeviceApi
 import ch.rupfizupfi.deck.device.api.LoadCellStream
 import ch.rupfizupfi.deck.device.api.LoadCellStreamProvider
 import ch.rupfizupfi.dscusb.dscusb.CellValueStream
@@ -24,6 +26,17 @@ import org.springframework.context.annotation.Conditional
 @ConditionalOnProperty(name = ["deck.hardware.mode"], havingValue = "real", matchIfMissing = true)
 @Conditional(OnWindowsCondition::class)
 class DeckLoadCellAutoConfiguration {
+
+    init {
+        // In the initializer, not a @Bean method: this jar is file-dropped onto the deck's
+        // loader.path, so a skewed contract must stop startup before any provider bean exists.
+        //
+        // The argument must stay the literal ContractVersion.VALUE. It is a compile-time constant
+        // and is inlined into THIS class file, which is what makes it the version this jar was
+        // built against. Do not "simplify" it away or read the version at runtime - either turns
+        // the check into a comparison of the deployed contract with itself, which always passes.
+        DeviceApi.verifyPluginBuiltAgainst(ContractVersion.VALUE)
+    }
 
     /** A new stream per call — a stopped [CellValueStream] can never be restarted. */
     @Bean

@@ -13,6 +13,20 @@ version = providers.gradleProperty("version").get()
 
 repositories {
     mavenCentral()
+    // Reached only when there is no sibling deck checkout to composite-include (see
+    // settings.gradle.kts) — with one, the substitution answers first and this is never queried.
+    // Content-filtered because GitHub Packages demands a token even for public reads: unfiltered,
+    // it would be asked for every dependency and each would then need credentials. Empty
+    // credentials are deliberate for the same reason — a sibling build must not need a token.
+    maven {
+        name = "GitHubPackagesDeviceApi"
+        url = uri("https://maven.pkg.github.com/rupfizupfi/breaktest-command-deck")
+        credentials {
+            username = providers.environmentVariable("GITHUB_ACTOR").getOrElse("")
+            password = providers.environmentVariable("GITHUB_TOKEN").getOrElse("")
+        }
+        content { includeGroup("ch.rupfizupfi.deck") }
+    }
 }
 
 dependencies {
