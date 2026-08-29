@@ -1,0 +1,90 @@
+name: build
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# packages: write is only exercised by the publish step below.
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # Full history: the version check diffs against the commit the push started from, which for a
+      # rebase-merge is several commits back. A shallow clone would not contain it.
+      - name: Check out this driver
+        uses: actions/checkout@v4
+        with:
+          path: dscusb
+          fetch-depth: 0
+
+      # The deck owns the hardware contract and this repo composite-includes it from a sibling
+      # directory, so the build cannot run without it. That is the point: compiling against the
+      # live contract IS the conformance check, and running it here turns contract drift into a
+      # CI failure instead of something discovered when the deck refuses to start.
+      #
+      # Pinned to main deliberately - a driver is only conformant against the released contract.
+      # Note the ordering that creates: device-api/ must exist on the deck's main before this can
+      # pass. Until the deck PR that introduces it is merged, this job fails on the missing
+      # included build, and that is expected rather than a defect here.
+      - name: Check out the contract owner as a sibling
+        uses: actions/checkout@v4
+        with:
+          repository: rupfizupfi/breaktest-command-deck
+          ref: main
+          path: breaktest-command-deck
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '26'
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      # No tests exist (src/test is empty, everything meaningful needs attached hardware), so this
+      # is a compile-and-package gate. Its value is the contract compile above.
+      - name: Build
+        working-directory: dscusb
+        run: ./gradlew build shadowJar --no-daemon
+
+      # Publishing is driven by the version in gradle.properties, not by tags: a merge that does
+      # not bump it is a code change to an unreleased version and must not overwrite a published
+      # artifact (GitHub Packages rejects re-publishing a release version anyway).
+      - name: Detect version change
+        id: version
+        working-directory: dscusb
+        env:
+          # The commit main was on before this push. Correct for squash, merge-commit AND
+          # rebase-merge, where HEAD~1 would be one of the pushed commits and could easily be one
+          # that did not touch the version - silently skipping the release.
+          PUSHED_FROM: ${{ github.event.before }}
+        run: |
+          set -euo pipefail
+          current=$(grep -E '^version=' gradle.properties | cut -d= -f2-)
+
+          base="${PUSHED_FROM:-}"
+          if [ -z "$base" ] || ! git cat-file -e "${base}^{commit}" 2>/dev/null; then
+            # No push context (a pull_request run) or a branch's first push: fall back.
+            base="HEAD~1"
+          fi
+          previous=$(git show "${base}:gradle.properties" 2>/dev/null | grep -E '^version=' | cut -d= -f2- || true)
+          echo "current=$current" >> "$GITHUB_OUTPUT"
+          if [ "$current" != "$previous" ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "version $previous -> $current, will publish" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "version unchanged at $current, nothing to publish" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Publish to GitHub Packages
+        if: github.event_name == 'push' && steps.version.outputs.changed == 'true'
+        working-directory: dscusb
+        env:
+          # GITHUB_ACTOR is a default Actions variable; the build reads both.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./gradlew publish --no-daemon

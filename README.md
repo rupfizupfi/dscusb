@@ -37,6 +37,35 @@ To smoke-test against real hardware:
 
 Both are implemented in [`examples/Demo.kt`](src/main/kotlin/ch/rupfizupfi/dscusb/examples/Demo.kt).
 
+## Windows only, and the plugin now enforces it
+
+`DSCUSBDrv64.dll` is a Win32 library on FTDI's Windows D2XX stack, and Mantracourt
+ships no Linux build — so `DSCUSB()` throws `UnsatisfiedLinkError` anywhere else.
+`DeckLoadCellAutoConfiguration` is therefore gated on `os.name` (`OnWindowsCondition`):
+off Windows it does not register the provider and logs why, so the deck refuses at
+startup instead of failing when a test opens the stream.
+
+A Linux path exists but is unbuilt: the vendor manual documents driving the module
+straight over its FTDI virtual COM port with the ASCII protocol (`!001:SYS?<CR>`,
+115200 8N1), which needs no vendor binary. Tracked as OQ-79 in the deck.
+
+## Publishing
+
+The shadow jar is published to GitHub Packages as `ch.rupfizupfi.dscusb:dscusb`, which is how
+breaktest-command-deck's production build gets the load-cell plugin — its `stageDrivers` task
+resolves this artifact into the container's runtime plugin directory.
+
+```bash
+GITHUB_ACTOR=<user> GITHUB_TOKEN=<pat with write:packages> ./gradlew publish
+```
+
+Bump `version` in `gradle.properties` first; the deck pins the version it resolves. Every published
+version must compile against the `device-api` contract it claims to implement — that compile is the
+only conformance check there is, so publish from a checkout whose sibling deck is up to date.
+
+For bench work there is no need to publish: `./gradlew shadowJar` and copy `build/libs/dscusb.jar`
+into the deck's `lib/`, which its `-PdeckDrivers=local` build option puts on `bootRun`'s classpath.
+
 ## Quick start
 
 ### Streaming a wired DSC USB cell
